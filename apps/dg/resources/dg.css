@@ -51,31 +51,33 @@
 }
 
 .data-dot {
+    stroke: white;
+    fill: #65bec9;
     opacity: 0.85 !important;
     pointer-events: all;
 }
 
 .data-dot:hover {
-    fill: red !important;
-    stroke: red !important;
+    fill: #a35b3a !important;
+    stroke: #a35b3a !important;
 }
 
 .data-dot-selected {
-    fill: red !important;
-    stroke-width: 2 !important;
+    fill: #a35b3a !important;
+    stroke-width: 1 !important;
     pointer-events: all;
 }
 
 /* data dot with variable fill color */
 .data-dot-colored {
     opacity: 0.85 !important;
-    stroke: #315B7D !important;
+    stroke: white !important;
     pointer-events: all;
 }
 
 .data-dot-colored-selected {
     stroke: black !important;
-    stroke-width: 2 !important;
+    stroke-width: 1 !important;
     pointer-events: all;
 }
 
@@ -157,11 +159,35 @@
     cursor: pointer;
 }
 
-.sc-view.component-border {
-    border-left: 4px #999 solid;
-    border-top: 4px #666 solid;
-    border-bottom: 4px #ccc solid;
-    border-right: 4px #999 solid;
+.component-border {
+    border-left: 4px rgba(153, 153, 153, 0.02) solid;
+    border-top: 4px rgba(153, 153, 153, 0.02) solid;
+    border-bottom: 4px rgba(153, 153, 153, 0.02) solid;
+    border-right: 4px rgba(153, 153, 153, 0.02) solid;
+}
+
+.component-view {
+    background-color: #f0f0f0;
+    /*-webkit-box-shadow: 10px 10px 5px #888888;*/
+    /*-moz-box-shadow: 10px 10px 5px #888888;*/
+    box-shadow: 0px 1px 1px 1px #888888;
+    border-radius:6px;
+}
+
+.titlebar {
+    background-color: #f0c678;
+    border-top-right-radius:6px;
+    border-top-left-radius:6px;
+}
+
+.titleview {
+    text-align: center;
+    vertical-align: middle;
+    color: white;
+    top: 4px !important;
+    height: 15px;
+    /*font-family: 'MuseoSans500';*/
+    font-size: 14px !important;
 }
 
 .sc-view .function-table-view {
@@ -244,7 +270,7 @@ body.dg .sc-view.doc-background {
 
 .graph-drop-frame {
     stroke-width: 3;
-    stroke: orange;
+    stroke: #ffd080;
     stroke-opacity: 0.6;
 }
 

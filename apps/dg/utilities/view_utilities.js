@@ -20,7 +20,7 @@
 
 DG.ViewUtilities = {
 
-  kTitleBarHeight: 20,  // for component views
+  kTitleBarHeight: 30,  // for component views
   kDragWidth: 8,  // for component views
   kBorderWidth: 4, // must correspond with .css constant
 

@@ -157,15 +157,17 @@ DG.ComponentView = SC.View.extend(
       containerView: SC.View.design({
         // By insetting the container view by half the drag width, we fix a "box model" problem
         // on IE that prevents easy access to the drag views.
-        layout: { left: kDragWidth / 2, bottom: kDragWidth / 2, right: kDragWidth / 2 },
+        layout: { left: 0, bottom: 0, right: 0 },
+        //layout: { left: kDragWidth / 2, bottom: kDragWidth / 2, right: kDragWidth / 2 },
         gearView: SC.outlet('titlebar.gearView'),
         childViews: 'titlebar coverSheet'.w(),
         titlebar: DG.DragBorderView.design({
           layout: { height: kTitleBarHeight },
-          backgroundColor: 'gray',
+          classNames: ['titlebar'],
           childViews: 'titleView statusView versionView closeBox gearView'.w(),
           titleView: SC.LabelView.design({
-            textAlign: SC.ALIGN_CENTER,
+            //textAlign: SC.ALIGN_CENTER,
+            classNames: ['titleview'],
             value: ''
           }),
           statusView: SC.LabelView.design({
