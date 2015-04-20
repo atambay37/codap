@@ -128,12 +128,7 @@ DG.appController = SC.Object.create((function () // closure
             localize: true,
             title: 'DG.AppController.fileMenuItems.importData', // "Import Data..."
             target: this,
-            action: 'importData' },
-          {
-            localize: true,
-            title: 'DG.AppController.fileMenuItems.exportCaseData', // "Export Case Data..."
-            target: this,
-            action: 'exportCaseData' }
+            action: 'importData' }
         ],
         docServerItems = [
           { isSeparator: YES },
@@ -371,7 +366,8 @@ DG.appController = SC.Object.create((function () // closure
     /**
      Attempts to parse the specified iDocText as the contents of a saved document in JSON format.
      @param    {String}    iDocText -- The JSON-formatted document text
-     @returns  {Boolean}   True on success, false on failure
+     @param    {Boolean}   saveImmediately -- whether to save existing doc.
+     @returns  {{Deferred}}   A deferred object that will complete with a new document open (or error).
      */
     openJsonDocument: function (iDocText, saveImmediately) {
       console.log('In app_controller:openJsonDocument');
@@ -833,7 +829,10 @@ DG.appController = SC.Object.create((function () // closure
         function handleRead() {
           try {
             if( iType === 'JSON') {
-              that.openJsonDocument(this.result, true);
+              that.openJsonDocument(this.result, true).fail(function (ex) {
+                DG.logError('JSON file open failed: ' + iFile.name);
+                iDialog.showAlert(ex);
+              });
             }
             else if( iType === 'TEXT') {
               that.importText(this.result, iFile.name);
@@ -983,7 +982,8 @@ DG.appController = SC.Object.create((function () // closure
           //      for a user generated event, such as a click.)
 
           if (!SC.empty(docJson)) {
-            var dataUri = "data:application/json;charset=utf-8;base64,"+btoa(docJson);
+            // construct a data url to support export in Safari
+            var dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(docJson);
             tDialog = DG.CreateSingleTextDialog({
               prompt: 'DG.AppController.exportDocument.prompt'.loc() +
                 " (Safari users may need to control-click <a href=\"" + dataUri +
@@ -1010,31 +1010,6 @@ DG.appController = SC.Object.create((function () // closure
           }
         }
       }, true);
-    },
-
-    /**
-     Handler for the Export Case Data... menu command.
-     Displays a dialog, so user can select and copy the case data from the current document.
-     */
-    exportCaseData: function () {
-      // callback to get export string from one of the menu item titles
-      var exportCollection = function (whichCollection) {
-        return DG.currDocumentController().exportCaseData(whichCollection);
-      };
-      // get array of exportable collection names for menu titles
-      var tMenuItems = DG.currDocumentController().exportCaseData().split('\t'),
-        tStartingMenuItem = tMenuItems[0];
-
-      DG.CreateExportCaseDataDialog({
-        prompt: 'DG.AppController.exportCaseData.prompt',
-        textLimit: 1000000,
-        textValue: exportCollection(tStartingMenuItem),
-        collectionMenuTitle: tStartingMenuItem,
-        collectionMenuItems: tMenuItems,
-        collectionMenuItemAction: exportCollection,
-        okTitle: 'DG.AppController.exportDocument.okTitle',
-        okTooltip: 'DG.AppController.exportDocument.okTooltip'
-      });
     },
 
     showShareLink: function() {
