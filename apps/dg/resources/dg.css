@@ -14,6 +14,15 @@
  *  limitations under the License.
  */
 
+/* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/2df7e5");
+
+
+@font-face {font-family: 'MuseoSans-500';src: url('webfonts/2DF7E5_0_0.eot');src: url('webfonts/2DF7E5_0_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2DF7E5_0_0.woff2') format('woff2'),url('webfonts/2DF7E5_0_0.woff') format('woff'),url('webfonts/2DF7E5_0_0.ttf') format('truetype');}
+
+
+@font-face {font-family: 'MuseoSans-500Italic';src: url('webfonts/2DF7E5_1_0.eot');src: url('webfonts/2DF7E5_1_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2DF7E5_1_0.woff2') format('woff2'),url('webfonts/2DF7E5_1_0.woff') format('woff'),url('webfonts/2DF7E5_1_0.ttf') format('truetype');}
+
 .dg-splash {
     background-color: white !important;
 }
@@ -184,10 +193,10 @@
     text-align: center;
     vertical-align: middle;
     color: white;
-    top: 4px !important;
+    top: 6px !important;
     height: 15px;
-    /*font-family: 'MuseoSans500';*/
-    font-size: 14px !important;
+    font-family: 'MuseoSans-500', "lucida sans", helvetica, arial;
+    font-size: 12px !important;
 }
 
 .sc-view .function-table-view {
