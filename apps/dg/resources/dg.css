@@ -15,13 +15,18 @@
  */
 
 /* @import must be at top of file, otherwise CSS will not work */
-@import url("//hello.myfonts.net/count/2df7e5");
+/*@import url("//hello.myfonts.net/count/2df7e5");*/
 
-
-@font-face {font-family: 'MuseoSans-500';src: url('webfonts/2DF7E5_0_0.eot');src: url('webfonts/2DF7E5_0_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2DF7E5_0_0.woff2') format('woff2'),url('webfonts/2DF7E5_0_0.woff') format('woff'),url('webfonts/2DF7E5_0_0.ttf') format('truetype');}
-
-
-@font-face {font-family: 'MuseoSans-500Italic';src: url('webfonts/2DF7E5_1_0.eot');src: url('webfonts/2DF7E5_1_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2DF7E5_1_0.woff2') format('woff2'),url('webfonts/2DF7E5_1_0.woff') format('woff'),url('webfonts/2DF7E5_1_0.ttf') format('truetype');}
+@font-face {font-family: 'MuseoSans-500';src: url('webfonts/2DF7E5_0_0.woff') format('woff');}
+/*@font-face {font-family: 'MuseoSans-500';src: url('webfonts/2DF7E5_0_0.eot');*/
+    /*src: url('webfonts/2DF7E5_0_0.eot?#iefix') format('embedded-opentype'),*/
+    /*url('webfonts/2DF7E5_0_0.woff2') format('woff2'),url('webfonts/2DF7E5_0_0.woff')*/
+    /*format('woff'),url('webfonts/2DF7E5_0_0.ttf') format('truetype');}*/
+/*@font-face {font-family: 'MuseoSans-500Italic';src: url('webfonts/2DF7E5_1_0.eot');*/
+    /*src: url('webfonts/2DF7E5_1_0.eot?#iefix') format('embedded-opentype'),*/
+    /*url('webfonts/2DF7E5_1_0.woff2') format('woff2'),url('webfonts/2DF7E5_1_0.woff')*/
+    /*format('woff'),url('webfonts/2DF7E5_1_0.ttf') format('truetype');}*/
+@font-face {font-family: 'Montserrat-Regular';src: url('webfonts/Montserrat-Regular.otf') format('otf');}
 
 .dg-splash {
     background-color: white !important;
@@ -39,7 +44,7 @@
 
 /* Default font for case tables */
 .dg-case-table {
-    /*font-family: 'MuseoSans-500', sans-serif !important;*/
+    font-family: 'Montserrat-Regular', sans-serif !important;
     font-size: 8pt !important;
 }
 
@@ -88,6 +93,14 @@
     stroke: black !important;
     stroke-width: 1 !important;
     pointer-events: all;
+}
+
+.axis-view {
+    font-family: Montserrat-Regular;
+}
+
+.axis-tick-label {
+    font-family: Montserrat-Regular !important;
 }
 
 .axis-dot {
@@ -151,7 +164,7 @@
 }
 
 .legend-view {
-    background-color: white;
+    background-color: inherit;
 }
 
 .legend-key {
@@ -184,7 +197,7 @@
 }
 
 .titlebar {
-    background-color: #f0c678;
+    background-color: #72bfca;
     border-top-right-radius:6px;
     border-top-left-radius:6px;
 }
@@ -224,7 +237,7 @@
 }
 
 body.dg .sc-view.doc-background {
-    background: static_url('images/dark_bg.jpg') !important;
+    background: static_url('images/bg-grid-grey.png') !important;
 }
 
 .sc-main {
@@ -280,8 +293,12 @@ body.dg .sc-view.doc-background {
     pointer-events: all;
 }
 
+.plot-view {
+    background-color: white;
+}
+
 .graph-view {
-    background-color: #ffffff;
+    background-color: #F9F9F9;
 }
 
 .graph-drop-frame {
