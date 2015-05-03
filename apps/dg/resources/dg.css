@@ -66,6 +66,7 @@
 
 .data-dot {
     stroke: white;
+    stroke-opacity: 0.6 !important;
     fill: #65bec9;
     opacity: 0.85 !important;
     pointer-events: all;
