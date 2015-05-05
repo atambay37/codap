@@ -67,7 +67,7 @@
 .data-dot {
     stroke: white;
     stroke-opacity: 0.6 !important;
-    fill: #65bec9;
+    fill: #e6805b;
     opacity: 0.85 !important;
     pointer-events: all;
 }
@@ -78,7 +78,7 @@
 }
 
 .data-dot-selected {
-    fill: #a35b3a !important;
+    fill: #1a7a93 !important;
     stroke-width: 1 !important;
     pointer-events: all;
 }
