@@ -129,7 +129,8 @@ DG.AxisView = DG.RaphaelBaseView.extend(DG.GraphDropTarget,
       return {
         displayProperties: ['model.attributeDescription.attribute',
           'model.attributeDescription.attributeStats.categoricalStats.numberOfCells',
-          'otherYAttributeDescription.attribute'],
+          'otherYAttributeDescription.attribute',
+          'otherAxisView.desiredExtent'],
 
         /**
          The model on which this view is based.
