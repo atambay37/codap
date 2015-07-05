@@ -186,7 +186,7 @@ DG = SC.Application.create((function () // closure
     /*
      * Semantic version number
      */
-    VERSION: '1.1',
+    VERSION: '2.0',
 
     /*
      * Build number
@@ -343,17 +343,23 @@ DG = SC.Application.create((function () // closure
      */
     componentMode: getUrlParameter('componentMode', 'no'),
 
-    toolButtons: [
-      'fileMenu',
+    toolButtons: [ // These appear on the left side of the tool shelf
+      //'fileMenu',
       //'gameMenu',
       'tableButton',
       'graphButton',
       'mapButton',
       'sliderButton',
-      'calcButton',
-      'textButton',
+      'calcButton'
+    ],
+
+    rightButtons: [ // These appear on the right side of the tool shelf
+      'undoButton',
+      'redoButton',
+      'tileListButton',
       'optionButton',
-      'guideButton'
+      'guideButton',
+      'textButton'
     ],
 
     logServerUrl: 'http://cc-log-manager.herokuapp.com/api/logs',

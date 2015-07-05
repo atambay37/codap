@@ -19,37 +19,42 @@
 // This page describes the main user interface for your application.  
 DG.mainPage = SC.Page.design((function() {
 
-  var
-      kToolbarHeight = 44,
-      kInfobarHeight = 24;
-  
+  var kButtonWidth = 40,
+      kToolbarHeight = 70,
+      kInfobarHeight = 30,
+      kIconTopPadding = 18,
+      kIconBottomPadding = 15;
+
   // begin compatible browser main page design
   return DG.Browser.isCompatibleBrowser() ? {
 
   // The main pane is made visible on screen as soon as your app is loaded.
   // Add childViews to this pane for views to display immediately on page load.
   mainPane: SC.MainPane.design({
-    childViews: 'infoBar topView scrollView'.w(),
+    childViews: 'navBar topView scrollView'.w(),
 
-    infoBar: SC.ToolbarView.design({
-      classNames: 'infobar'.w(),
-      layout: { top: 0, height: kInfobarHeight },
+    navBar: SC.View.design({
+      classNames: 'navBar'.w(),
+      layout: { height: kInfobarHeight },
       childViews: 'leftSide rightSide'.w(),
       anchorLocation: SC.ANCHOR_TOP,
 
       leftSide: SC.View.design(SC.FlowedLayout, {
-        layout: { top: 3, left: 5, height: kInfobarHeight, zIndex: 1  },
-        childViews: 'documentTitle titleEditButton saveNotification'.w(),
-        defaultFlowSpacing: { left: 0, right: 5, top: 0, bottom: 0 },
+        layout: { width: 0, left: 5, height: kInfobarHeight, zIndex: 1  },
+        childViews: 'documentTitle navPopupButton saveNotification'.w(),
+        defaultFlowSpacing: { left: 5, right: 5, top: (kInfobarHeight - 18) / 2},
+        canWrap: false,
+        shouldResizeHeight: false,
 
         documentTitle: SC.LabelView.design(SC.AutoResize, {
+          classNames: 'doc-title'.w(),
           layout: { height: 18 },
-          fontWeight: SC.BOLD_WEIGHT,
-          textAlign: SC.ALIGN_LEFT,
+          toolTip: 'DG.Document.documentName.toolTip'.loc(),  // "Click to edit document name"
+          localize: true,
           needsEllipsis: YES,
           isEditable: YES,
           valueBinding: 'DG._currDocumentController.documentName',
-          toolTipBinding: 'DG._currDocumentController.documentName',
+          //toolTipBinding: 'DG._currDocumentController.documentName',
           originalValue: null,
           inlineEditorDidBeginEditing: function(editor, value) {
             this.set('originalValue', value);
@@ -69,15 +74,16 @@ DG.mainPage = SC.Page.design((function() {
           }
         }),
 
-        titleEditButton: SC.LabelView.design({
-          layout: { height: 14, width: 12 },
-          textAlign: SC.ALIGN_LEFT,
-          escapeHTML: NO,
-          value: '<img style="margin-top: 2px;" src="' + static_url('images/pencil.png') + '" />',
-          tooltip: 'Rename document.',
-          click: function() {
-            this.getPath('parentView.documentTitle').beginEditing();
-          }
+        navPopupButton: DG.IconButton.design( {
+          layout: { width: 20 },
+          flowSpacing: { left: 0, top: 2, right: 5 },
+          iconName: static_url('images/caret-down.png'),
+          depressedIconName: static_url('images/caret-down.png'),
+          target: 'DG.appController.fileMenuPane',
+          action: 'popup',
+          toolTip: 'DG.Document.documentPopup.toolTip',  // "Open, Save, Close, Import, Export, ..."
+          localize: true,
+          iconExtent: { width: 12, height: 21 }
         }),
 
         saveNotification: SC.LabelView.design(SC.AutoResize, {
@@ -89,120 +95,125 @@ DG.mainPage = SC.Page.design((function() {
       }),
 
       rightSide: SC.View.design(SC.FlowedLayout, {
-        layout: { top: 3, right: 5, height: kInfobarHeight, zIndex: 0 },
-        childViews: 'statusLabel versionLabel'.w(),
+        layout: { width: 0, right: 0 },
+        childViews: 'statusLabel versionLabel helpButton'.w(),
         align: SC.ALIGN_RIGHT,
-        defaultFlowSpacing: { left: 5, right: 0, top: 0, bottom: 0 },
+        canWrap: false,
+        shouldResizeHeight: false,
+        defaultFlowSpacing: { top: (kInfobarHeight - 18) / 2 },
 
         versionLabel: SC.LabelView.design(SC.AutoResize, {
           layout: { height: 18 },
-          fontWeight: SC.BOLD_WEIGHT,
           textAlign: SC.ALIGN_RIGHT,
           value: DG.getVariantString('DG.mainPage.mainPane.versionString').loc( DG.VERSION, DG.BUILD_NUM )
         }),
 
         statusLabel: SC.LabelView.design(SC.AutoResize, {
           layout: { height: 18 },
+          flowSpacing: { right: 25, top: (kInfobarHeight - 18) / 2 },
           textAlign: SC.ALIGN_RIGHT,
           currUsernameBinding: 'DG.authorizationController.currLogin.user',
           value: function() {
-            return 'User: ' + this.get('currUsername');
+            return this.get('currUsername');
           }.property('currUsername')
+        }),
+
+        helpButton: DG.IconButton.design( {
+          layout: { width: 20 },
+          flowSpacing: { left: 5, top: 2, right: 5 },
+          iconName: static_url('images/question-circle.png'),
+          depressedIconName: static_url('images/question-circle.png'),
+          target: 'DG.appController',
+          action: 'showHelp',
+          toolTip: 'DG.ToolButtonData.help.toolTip',  // "View or change CODAP options"
+          localize: true,
+          iconExtent: { width: 20, height: 20 }
         })
       }),
 
-      init: function() {
-        sc_super();
-      }
-
+      /**
+       * We have a chance to adjust layout.
+       */
+ /*     sideCalculatedWidthDidChange: function( iView, iKey) {
+        var tWidth = iView.get('calculatedWidth');
+        iView.adjust('width', tWidth);
+      }.observes('leftSide.calculatedWidth', 'rightSide.calculatedWidth')
+*/
     }),
 
-    topView: SC.ToolbarView.design({
+    topView: SC.View.design({
       classNames: 'toolshelf-background'.w(),
-      layout: { top: kInfobarHeight, height: kToolbarHeight },
-      childViews: 'undoButton redoButton logoutButton'.w(),
+      layout: { top: kInfobarHeight, height: kToolbarHeight - 1 },
+      childViews: 'iconButtons rightButtons'.w(),
 
-      undoButton: SC.ButtonView.design({
-        layout: { centerY:0, height:24, left:0, width:80 },
-        classNames:['dg-toolshelf-undo-button'],
-        localize: true,
-        title: 'DG.mainPage.mainPane.undoButton.title', // "Undo"
-        toolTip: function() {
-          var cmd = this.get('nextUndoCommand');
-          return (cmd ? cmd.get('undoString') : 'DG.mainPage.mainPane.undoButton.toolTip');  // "Undo the last action"
-        }.property('nextUndoCommand'),
-        target: 'DG.UndoHistory',
-        action: 'undo',
-        nextUndoCommandBinding: SC.Binding.oneWay('DG.UndoHistory.nextUndoCommand'),
-        isEnabledBinding: SC.Binding.oneWay('DG.UndoHistory.canUndo'),
-        isVisibleBinding: SC.Binding.oneWay('DG.UndoHistory.enabled')
-      }),
-
-      redoButton: SC.ButtonView.design({
-        layout: { centerY:0, height:24, left:0, width:80 },
-        classNames:['dg-toolshelf-redo-button'],
-        localize: true,
-        title: 'DG.mainPage.mainPane.redoButton.title', // "Redo"
-        toolTip: function() {
-          var cmd = this.get('nextRedoCommand');
-          return (cmd ? cmd.get('redoString') : 'DG.mainPage.mainPane.redoButton.toolTip');  // "Redo the last undone action"
-        }.property('nextRedoCommand'),
-        target: 'DG.UndoHistory',
-        action: 'redo',
-        nextRedoCommandBinding: SC.Binding.oneWay('DG.UndoHistory.nextRedoCommand'),
-        isEnabledBinding: SC.Binding.oneWay('DG.UndoHistory.canRedo'),
-        isVisibleBinding: SC.Binding.oneWay('DG.UndoHistory.enabled')
-      }),
-
-      logoutButton: SC.ButtonView.design({
-        layout: { centerY:0, height:24, left:0, width:80 },
-        classNames:['dg-toolshelflogin-button'],
-        localize: true,
-        title: (DG.documentServer ? 'DG.Authorization.loginPane.login' : 'DG.mainPage.mainPane.logoutButton.title'), // "Logout"
-        target: 'DG.appController',
-        action: 'logout',
-        userBinding: 'DG.authorizationController.currLogin.user',
-        isVisible: function() {
-          return DG.documentServer && this.get('user') === 'guest';
-        }.property('user'),
-        toolTip: (DG.documentServer ? 'DG.Authorization.loginPane.login' : 'DG.mainPage.mainPane.logoutButton.toolTip'),  // "Log out the current user"
-        userDidChange: function () {
-          var user = this.get('user');
-          this.set('title', DG.documentServer && user === 'guest' ?
-            'DG.Authorization.loginPane.login' : 'DG.mainPage.mainPane.logoutButton.title'); // "Logout"
-        }.observes('user')
-      }),
-
-      init: function() {
-        sc_super();
-        function moveHorizontal( iChildView, iNewLeft ) {
-          // move child view by updating its left-hand position
-          var tLayout = iChildView.get('layout'),
-              tNewRight = iNewLeft + tLayout.width;
-          tLayout.left = iNewLeft;
-          iChildView.set( 'layout', tLayout );
-          return tNewRight;
+      iconButtons: SC.View.design(SC.FlowedLayout, {
+        classNames: 'buttons'.w(),
+        layout: { width: 0, top: 0, left: 0, height: kToolbarHeight - 1 },
+        align: SC.ALIGN_LEFT,
+        canWrap: false,
+        shouldResizeHeight: false,
+        defaultFlowSpacing: { left: 10, top: kIconTopPadding },
+        init: function() {
+          sc_super();
+          // create tool buttons, left-justified
+          DG.toolButtons.forEach( function( iButtonName ) {
+            var tButton = DG.ToolButtonData[iButtonName];
+            this[ iButtonName] = DG.IconButton.create( tButton);
+            this[ iButtonName].set('layout', { width: kButtonWidth });
+            this.appendChild( this[ iButtonName ]);
+          }.bind(this));
         }
-        var kSpacer = 10,
-            kButtonWidth = 40,
-            tLeft = kSpacer;
-        // create tool buttons, left-justified
-        DG.toolButtons.forEach( function( iButtonName ) {
-          var tButton = DG.ToolButtonData[iButtonName];
-          this[ iButtonName] = DG.IconButton.create( tButton);
-          this[ iButtonName].set('layout', { left: tLeft, width: kButtonWidth });
-          this.appendChild( this[ iButtonName ]);
-          tLeft += kButtonWidth + kSpacer;
-        }.bind(this));
-        DG.currDocumentController().set('guideButton', this.guideButton);
-        // move existing buttons, left-justified after tool buttons
-        tLeft += kSpacer; // extra space to right of gear
-        tLeft = kSpacer + moveHorizontal( this.undoButton, tLeft );
-        tLeft = kSpacer + moveHorizontal( this.redoButton, tLeft );
-        tLeft += kSpacer; // extra space to right of redo
-        tLeft = kSpacer + moveHorizontal( this.logoutButton, tLeft );
-      }
-      
+
+      }),
+
+      rightButtons: SC.View.design(SC.FlowedLayout, {
+        layout: { top: 0, right: 10, width: 0, height: kToolbarHeight - 1 },
+        align: SC.ALIGN_RIGHT,
+        canWrap: false,
+        shouldResizeHeight: false,
+        defaultFlowSpacing: { right: 10, top: kIconTopPadding },
+        childViews: 'logoutButton'.w(),
+
+        logoutButton: SC.ButtonView.design({
+          layout: { centerY:0, height:24, width:80 },
+          localize: true,
+          title: (DG.documentServer ? 'DG.Authorization.loginPane.login' : 'DG.mainPage.mainPane.logoutButton.title'), // "Logout"
+          target: 'DG.appController',
+          action: 'logout',
+          userBinding: 'DG.authorizationController.currLogin.user',
+          isVisible: function() {
+            return DG.documentServer && this.get('user') === 'guest';
+          }.property('user'),
+          toolTip: (DG.documentServer ? 'DG.Authorization.loginPane.login' : 'DG.mainPage.mainPane.logoutButton.toolTip'),  // "Log out the current user"
+          userDidChange: function () {
+            var user = this.get('user');
+            this.set('title', DG.documentServer && user === 'guest' ?
+                'DG.Authorization.loginPane.login' : 'DG.mainPage.mainPane.logoutButton.title'); // "Logout"
+          }.observes('user')
+        }),
+        init: function() {
+          sc_super();
+          // create right buttons, right-justified
+          DG.rightButtons.forEach( function( iButtonName ) {
+            var tButton = DG.RightButtonData[iButtonName];
+            this[ iButtonName] = DG.IconButton.create( tButton);
+            this[ iButtonName].set('layout', { width: kButtonWidth });
+            this.appendChild( this[ iButtonName ]);
+          }.bind(this));
+          DG.currDocumentController().set('guideButton', this.guideButton);
+        }
+      }),
+
+      /**
+       * We have a chance to adjust layout.
+       */
+/*
+      buttonsCalculatedWidthDidChange: function( iView, iKey) {
+        var tWidth = iView.get('calculatedWidth');
+        iView.adjust('width', tWidth);
+      }.observes('iconButtons.calculatedWidth', 'rightButtons.calculatedWidth')
+*/
+
     }), // topView
 
     scrollView: SC.ScrollView.design({

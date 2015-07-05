@@ -188,17 +188,15 @@ DG.appController = SC.Object.create((function () // closure
 
     optionMenuItems: function () {
       return [
-        { localize: true, title: 'DG.AppController.optionMenuItems.help', // "Help...",
-          target: this, action: 'showHelp' },
-        { localize: true, title: 'DG.AppController.optionMenuItems.reportProblem', // "Report Problem..."
-          target: this, action: 'reportProblem' },
-        { localize: true, title: 'DG.AppController.optionMenuItems.toWebSite', // "CODAP website...",
-          target: this, action: 'showWebSite' },
-        { isSeparator: YES },
+        { localize: true, title: 'DG.AppController.optionMenuItems.viewWebPage', // "View Web Page..."
+          target: this, action: 'viewWebPage' },
         { localize: true, title: 'DG.AppController.optionMenuItems.configureGuide', // "Configure Guide..."
           target: this, action: 'configureGuide' },
-        { localize: true, title: 'DG.AppController.optionMenuItems.viewWebPage', // "View Web Page..."
-          target: this, action: 'viewWebPage' }
+        { isSeparator: YES },
+        { localize: true, title: 'DG.AppController.optionMenuItems.toWebSite', // "CODAP website...",
+          target: this, action: 'showWebSite' },
+        { localize: true, title: 'DG.AppController.optionMenuItems.reportProblem', // "Report Problem..."
+          target: this, action: 'reportProblem' }
       ];
     }.property(),
 
@@ -587,7 +585,7 @@ DG.appController = SC.Object.create((function () // closure
     },
 
     triggerSaveNotification: function() {
-      var el = DG.getPath('mainPage.mainPane.infoBar.leftSide.saveNotification.layer');
+      var el = DG.getPath('mainPage.mainPane.navBar.leftSide.saveNotification.layer');
       var opacity = 1;
       var next = function(i) {
         if (opacity > 0) {

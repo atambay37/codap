@@ -38,7 +38,7 @@ DG.IconButton = SC.View.extend(
       iconName: null,
       depressedIconName: null,
       title: null,
-      iconExtent: { width: 32, height: 32 },
+      iconExtent: { width: 29, height: 20 },
       childViews: 'iconView labelView'.w(),
         iconView: DG.ImageView.design({
           classNames: 'icon-button',
@@ -56,7 +56,7 @@ DG.IconButton = SC.View.extend(
         }),
         labelView: SC.LabelView.design({
           classNames: ['icon-label'],
-          layout: { bottom: 0, height: 15 },
+          layout: { height: 15 },
           textAlign: SC.ALIGN_CENTER,
           valueBinding: '.parentView.title',
           localizeBinding: '.parentView.localize'
@@ -65,7 +65,8 @@ DG.IconButton = SC.View.extend(
       init: function() {
         sc_super();
         this.iconView.set('layout',
-          { top: 0, centerX: 0, height: this.iconExtent.width, width: this.iconExtent.height });
+          { top: 0, centerX: 0, height: this.iconExtent.height, width: this.iconExtent.width });
+        this.labelView.adjust('top', this.iconExtent.height);
         this.labelView.set('isVisible', !SC.empty( this.get('title')));
         // Preload depressed icon image
         SC.imageQueue.loadImage( this.depressedIconName);
@@ -151,7 +152,7 @@ DG.IconButton = SC.View.extend(
         // 'displayToolTip' is auto-localized if 'localize' is true
         var toolTip = this.get('displayToolTip');
         if (toolTip)
-          context.attr('title', toolTip);
+          context.setAttr('title', toolTip);
       }
     };
   }()) // function closure

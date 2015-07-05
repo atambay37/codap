@@ -244,7 +244,9 @@ SC.stringsFor('English', {
 
   // DG.Document
   'DG.Document.defaultDocumentName' : "Untitled Document",
-  
+  'DG.Document.documentName.toolTip' : "Click to edit document name",   // "Click to edit document name"
+  'DG.Document.documentPopup.toolTip' : "Open, Save, Close, Import, Export, ...",   // "Open, Save, Close, Import, Export, ..."
+
   // DG.SliderView
   'DG.SliderView.thumbView.toolTip' : "Drag to change the slider's value",
   'DG.SliderView.startButton.toolTip' : "Start/stop animation",
@@ -268,9 +270,12 @@ SC.stringsFor('English', {
   'DG.ToolButtonData.mapButton.toolTip' : "Make a map",
   'DG.ToolButtonData.optionMenu.title' : "Options",
   'DG.ToolButtonData.optionMenu.toolTip' : "Help, activities, learn about CODAP, ...",
+  'DG.ToolButtonData.tileListMenu.title' : "Tiles",
+  'DG.ToolButtonData.tileListMenu.toolTip' : "Show the list of tiles in the document",
   'DG.ToolButtonData.guideMenu.title' : "Guide",
   'DG.ToolButtonData.guideMenu.toolTip' : "Show the guide for this activity and navigate within it",
   'DG.ToolButtonData.guideMenu.showGuide' : "Show Guide",
+  'DG.ToolButtonData.help.toolTip' : "Open a web view showing help for CODAP",
 
   // Undo / Redo
   'DG.Undo.exceptionOccurred': "An error occurred while trying to undo.",
