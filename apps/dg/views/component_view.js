@@ -174,12 +174,12 @@ DG.ComponentView = SC.View.extend(
         // on IE that prevents easy access to the drag views.
         layout: { left: 0, bottom: 0, right: 0 },
         //layout: { left: kDragWidth / 2, bottom: kDragWidth / 2, right: kDragWidth / 2 },
-        gearView: SC.outlet('titlebar.gearView'),
+        //gearView: SC.outlet('titlebar.gearView'),
         childViews: 'titlebar coverSheet'.w(),
         titlebar: DG.DragBorderView.design({
           layout: { height: kTitleBarHeight },
           classNames: ['titlebar'],
-          childViews: 'titleView statusView versionView closeBox gearView'.w(),
+          childViews: 'titleView statusView versionView closeBox'.w(), // gearView
           titleView: SC.LabelView.design({
             //textAlign: SC.ALIGN_CENTER,
             classNames: ['titleview'],
@@ -200,12 +200,23 @@ DG.ComponentView = SC.View.extend(
           closeBox: DG.TitleBarButtonView.design({
             layout: { left: 0, top: 0, width: kTitleBarHeight, height: kTitleBarHeight },
             classNames:['dg-close-view'],
-            scale: SC.SCALE_NONE
+            scale: SC.SCALE_NONE,
+            isVisible: false
           }),
+/*
           gearView: DG.TitleBarGearView.design({
             layout: { right: 5, centerY: 0, width: 16, height: 16 },
             classNames:['dg-gear-view']
           }),
+*/
+          mouseEntered: function (evt) {
+            this.setPath('closeBox.isVisible', true);
+            return YES;
+          },
+          mouseExited: function (evt) {
+            this.setPath('closeBox.isVisible', false);
+            return YES;
+          },
           dragAdjust: function (evt, info) {
             var tOuterView = this.viewToDrag(),
               tX = info.left + (evt.pageX - info.pageX),
@@ -232,7 +243,7 @@ DG.ComponentView = SC.View.extend(
         classNames: ['component-border'],
         setContentView: function (iContentView) {
           this.set('contentView', iContentView);
-          this.get('gearView').set('contentView', iContentView);
+          //this.get('gearView').set('contentView', iContentView);
         }
 
       }), // containerView

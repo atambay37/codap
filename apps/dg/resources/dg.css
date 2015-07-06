@@ -60,10 +60,13 @@
 }
 
 .navBar {
-    background-color: #005060 !important;
+    background-color: #005060;
+}
+
+.navBar .sc-view {
     color: white;
     font-family: 'Montserrat-Regular', sans-serif !important;
-    font-size: 8pt !important;
+    font-size: 10pt !important;
 }
 
 .doc-title {
@@ -217,6 +220,10 @@
     background-color: #72bfca;
     border-top-right-radius:6px;
     border-top-left-radius:6px;
+}
+
+.close-icon {
+    fill: white;
 }
 
 .titleview {
