@@ -152,7 +152,7 @@ DG.IconButton = SC.View.extend(
         // 'displayToolTip' is auto-localized if 'localize' is true
         var toolTip = this.get('displayToolTip');
         if (toolTip)
-          context.setAttr('title', toolTip);
+          context.attr('title', toolTip);
       }
     };
   }()) // function closure

@@ -77,6 +77,12 @@
     padding-left: 3px;
 }
 
+.inspector-palette {
+    background-color: #01879E;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
 .drag-label {
     color: black;
     font-size: large !important;
@@ -227,13 +233,16 @@
 }
 
 .titleview {
+    cursor: text;
     text-align: center;
     vertical-align: middle;
     color: white;
     top: 4px !important;
     height: 15px;
-    /*font-family: 'MuseoSans-500', "lucida sans", helvetica, arial;*/
     font-size: 12px !important;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
 }
 
 .sc-view .function-table-view {

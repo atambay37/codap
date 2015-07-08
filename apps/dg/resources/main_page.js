@@ -31,7 +31,7 @@ DG.mainPage = SC.Page.design((function() {
   // The main pane is made visible on screen as soon as your app is loaded.
   // Add childViews to this pane for views to display immediately on page load.
   mainPane: SC.MainPane.design({
-    childViews: 'navBar topView scrollView'.w(),
+    childViews: 'navBar topView scrollView inspectorPalette'.w(),
 
     navBar: SC.View.design({
       classNames: 'navBar'.w(),
@@ -222,6 +222,11 @@ DG.mainPage = SC.Page.design((function() {
       alwaysBounceVertical: false,
       contentView: DG.ContainerView.design( {
       })
+    }),
+
+    inspectorPalette: SC.View.design( {
+      layout: { right: 0, height: 50, width: 50 },
+      classNames: 'inspector-palette'.w()
     }),
     
     flagsChanged: function( iEvent) {

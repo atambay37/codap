@@ -40,6 +40,14 @@ DG.DataDisplayModel = SC.Object.extend( DG.Destroyable,
     dataConfiguration: null,
 
     /**
+     * @property {String}
+     */
+    defaultTitle: function() {
+      return this.getPath('dataConfiguration.defaultTitle');
+    }.property('*dataConfiguration.defaultTitle'),
+
+
+    /**
       @property { DG.CollectionClient }
     */
     collectionClient: null,
