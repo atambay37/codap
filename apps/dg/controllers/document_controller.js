@@ -718,7 +718,6 @@ DG.DocumentController = SC.Object.extend(
                                   componentClass: { type: 'DG.GraphView', constructor: DG.GraphView},
                                   contentProperties: { model: tGraphModel },
                                   defaultLayout: { width: 300, height: 300 },
-                                  //title: 'DG.DocumentController.graphTitle'.loc(),  // "Graph"
                                   isResizable: true}
                                 );
 

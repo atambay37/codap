@@ -22,8 +22,7 @@ DG.mainPage = SC.Page.design((function() {
   var kButtonWidth = 40,
       kToolbarHeight = 70,
       kInfobarHeight = 30,
-      kIconTopPadding = 18,
-      kIconBottomPadding = 15;
+      kIconTopPadding = 18;
 
   // begin compatible browser main page design
   return DG.Browser.isCompatibleBrowser() ? {
@@ -54,7 +53,6 @@ DG.mainPage = SC.Page.design((function() {
           needsEllipsis: YES,
           isEditable: YES,
           valueBinding: 'DG._currDocumentController.documentName',
-          //toolTipBinding: 'DG._currDocumentController.documentName',
           originalValue: null,
           inlineEditorDidBeginEditing: function(editor, value) {
             this.set('originalValue', value);
@@ -96,6 +94,7 @@ DG.mainPage = SC.Page.design((function() {
 
       rightSide: SC.View.design(SC.FlowedLayout, {
         layout: { width: 0, right: 0 },
+        classNames: 'right-side'.w(),
         childViews: 'statusLabel versionLabel helpButton'.w(),
         align: SC.ALIGN_RIGHT,
         canWrap: false,
@@ -125,7 +124,7 @@ DG.mainPage = SC.Page.design((function() {
           depressedIconName: static_url('images/question-circle.png'),
           target: 'DG.appController',
           action: 'showHelp',
-          toolTip: 'DG.ToolButtonData.help.toolTip',  // "View or change CODAP options"
+          toolTip: 'DG.ToolButtonData.help.toolTip',  // "Open a web view showing help for CODAP"
           localize: true,
           iconExtent: { width: 20, height: 20 }
         })
@@ -202,17 +201,7 @@ DG.mainPage = SC.Page.design((function() {
           }.bind(this));
           DG.currDocumentController().set('guideButton', this.guideButton);
         }
-      }),
-
-      /**
-       * We have a chance to adjust layout.
-       */
-/*
-      buttonsCalculatedWidthDidChange: function( iView, iKey) {
-        var tWidth = iView.get('calculatedWidth');
-        iView.adjust('width', tWidth);
-      }.observes('iconButtons.calculatedWidth', 'rightButtons.calculatedWidth')
-*/
+      })
 
     }), // topView
 
@@ -225,7 +214,7 @@ DG.mainPage = SC.Page.design((function() {
     }),
 
     inspectorPalette: SC.View.design( {
-      layout: { right: 0, height: 50, width: 50 },
+      layout: { right: 0, top: 100, height: 50, width: 50 },
       classNames: 'inspector-palette'.w()
     }),
     

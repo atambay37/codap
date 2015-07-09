@@ -83,7 +83,7 @@ DG.Component = DG.BaseModel.extend(
       init: function() {
         sc_super();
         var tStorage = this.get('componentStorage');
-        if( tStorage.title)
+        if( tStorage && tStorage.title)
           this.set('title', tStorage.title);
       },
 

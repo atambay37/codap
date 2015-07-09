@@ -65,8 +65,8 @@
 
 .navBar .sc-view {
     color: white;
-    font-family: 'Montserrat-Regular', sans-serif !important;
-    font-size: 10pt !important;
+    font-family: 'Montserrat-Regular', sans-serif;
+    font-size: 10pt;
 }
 
 .doc-title {
@@ -75,6 +75,11 @@
     cursor: text;
     background-color: #0b8a9a;
     padding-left: 3px;
+}
+
+.right-side .sc-view {
+    font-size: 9pt;
+    color: rgba(255,255,255,0.5);
 }
 
 .inspector-palette {
@@ -135,7 +140,7 @@
 }
 
 .axis-label {
-    font-family: inherit !important;
+    font-family: Montserrat-Regular !important;
     /*fill: blue;*/
     cursor: pointer;
     font-size: 14px !important;
@@ -185,7 +190,6 @@
 
 .data-tip-text {
     text-align: left !important;
-    /*font-family: "lucida sans", helvetica, arial !important;*/
     font-size: 100% !important;
 }
 
@@ -216,8 +220,9 @@
 
 .component-view {
     background-color: #f0f0f0;
-    /*-webkit-box-shadow: 10px 10px 5px #888888;*/
-    /*-moz-box-shadow: 10px 10px 5px #888888;*/
+    -webkit-box-shadow: 0px 1px 1px 1px #888888;
+    -moz-box-shadow: 0px 1px 1px 1px #888888;
+    -ie-box-shadow: 0px 1px 1px 1px #888888;
     box-shadow: 0px 1px 1px 1px #888888;
     border-radius:6px;
 }
@@ -282,7 +287,7 @@ body.dg .sc-view.doc-background {
 }
 .sc-view.toolshelf-background {
     /*background: static_url('images/toolshelf.png') repeat-x center top !important;*/
-    background-color: #ECECEC;
+    background-color: #ececec;
     border-bottom: 1px solid #dcdbd8;
 }
 
