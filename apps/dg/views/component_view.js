@@ -353,6 +353,11 @@ DG.ComponentView = SC.View.extend(
         return this._title;
       }.property(),
 
+      modelTitleChanged: function( iModel, iKey, iValue) {
+        if( !SC.none( iValue))
+          this.set('title', iValue);
+      }.observes('model.title'),
+
       version: null,
       versionBinding: '.containerView.titlebar.versionView.value',
 

@@ -118,15 +118,15 @@ DG.mainPage = SC.Page.design((function() {
         }),
 
         helpButton: DG.IconButton.design( {
-          layout: { width: 20 },
-          flowSpacing: { left: 5, top: 2, right: 5 },
-          iconName: static_url('images/question-circle.png'),
-          depressedIconName: static_url('images/question-circle.png'),
+          layout: { width: 15 },
+          flowSpacing: { left: 5, top: 7, right: 5 },
+          iconName: static_url('images/icon-help.svg'),
+          depressedIconName: static_url('images/icon-help.svg'),
           target: 'DG.appController',
           action: 'showHelp',
           toolTip: 'DG.ToolButtonData.help.toolTip',  // "Open a web view showing help for CODAP"
           localize: true,
-          iconExtent: { width: 20, height: 20 }
+          iconExtent: { width: 15, height: 15 }
         })
       }),
 
@@ -213,7 +213,7 @@ DG.mainPage = SC.Page.design((function() {
       })
     }),
 
-    inspectorPalette: SC.View.design( {
+    inspectorPalette: DG.InspectorView.design( {
       layout: { right: 0, top: 100, height: 50, width: 50 },
       classNames: 'inspector-palette'.w()
     }),

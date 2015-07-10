@@ -49,6 +49,10 @@ DG.Component = DG.BaseModel.extend(
         return this._title;
       }.property('content.defaultTitle'),
 
+      defaultTitleChanged: function() {
+        this.set('title', this.getPath('content.defaultTitle'));
+      }.observes('content.defaultTitle'),
+
       /**
        * Content is an arbitrary javascript object, serializable, and defined
        * by the Component.
@@ -56,7 +60,6 @@ DG.Component = DG.BaseModel.extend(
       content: function (iKey, iValue) {
         if (iValue !== undefined) {
           DG.Component.setContent(this, iValue);
-          return this;
         }
         return DG.Component.getContent(this);
       }.property(),

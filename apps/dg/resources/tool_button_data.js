@@ -48,7 +48,7 @@ DG.ToolButtonData = {
     toolTip: 'DG.ToolButtonData.tableButton.toolTip', // "Open/close the case table (ctrl-alt-t)"
     localize: true,
     isEnabledBinding: SC.Binding.oneWay('DG.currDocumentController.ready'),
-    iconExtent: { width: 29, height: 20 }
+    iconExtent: { width: 27, height: 20 }
   },
 
   graphButton: {
@@ -88,12 +88,13 @@ DG.ToolButtonData = {
 
   calcButton: {
     title: 'DG.ToolButtonData.calcButton.title',  // "Calc"
-    iconName: static_url('images/calc.png'),
-    depressedIconName: static_url('images/calc_depressed.png'),
+    iconName: static_url('images/icon-calc.svg'),
+    depressedIconName: static_url('images/icon-calc.svg'),
     target: 'DG.mainPage',
     action: 'toggleCalculator',
     toolTip: 'DG.ToolButtonData.calcButton.toolTip',  // "Open/close the calculator (ctrl-alt-c)"
-    localize: true
+    localize: true,
+    iconExtent: { width: 16, height: 20 }
   }
 
 };
@@ -159,8 +160,8 @@ DG.RightButtonData = {
 
   optionButton: {
     title: 'DG.ToolButtonData.optionMenu.title',  // "Options"
-    iconName: static_url('images/icon-info.svg'),
-    depressedIconName: static_url('images/icon-info.svg'),
+    iconName: static_url('images/icon-options.svg'),
+    depressedIconName: static_url('images/icon-options.svg'),
     target: 'DG.appController.optionMenuPane',
     action: 'popup',
     toolTip: 'DG.ToolButtonData.optionMenu.toolTip',  // "View or change CODAP options"
@@ -170,12 +171,13 @@ DG.RightButtonData = {
 
   guideButton: {
     title: 'DG.ToolButtonData.guideMenu.title',  // "Guide"
-    iconName: static_url('images/guide.png'),
-    depressedIconName: static_url('images/guide_depressed.png'),
+    iconName: static_url('images/icon-guide.svg'),
+    depressedIconName: static_url('images/icon-guide.svg'),
     target: 'DG.appController.guideMenuPane',
     action: 'popup',
     toolTip: 'DG.ToolButtonData.guideMenu.toolTip',  // "View or change CODAP options"
     localize: true,
+    iconExtent: { width: 21, height: 20 },
     isVisible: false
   }
 

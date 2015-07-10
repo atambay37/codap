@@ -46,6 +46,9 @@ DG.DataDisplayModel = SC.Object.extend( DG.Destroyable,
       return this.getPath('dataConfiguration.defaultTitle');
     }.property('*dataConfiguration.defaultTitle'),
 
+    defaultTitleChanged: function() {
+      this.notifyPropertyChange( 'defaultTitle', this.get('defaultTitle'));
+    }.observes('*dataConfiguration.defaultTitle'),
 
     /**
       @property { DG.CollectionClient }

@@ -89,7 +89,7 @@ DG.PlotDataConfiguration = SC.Object.extend(
     var tTitle = this.getPath('collectionClient.name');
     tTitle = SC.empty( tTitle) ? 'DG.DataContext.noData'.loc() : tTitle;
     return tTitle;
-  }.property( 'collectionClient'),
+  }.property( 'dataContext'),
 
   /**
     @property { DG.AttributePlacementDescription }
