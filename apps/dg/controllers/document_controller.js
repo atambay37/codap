@@ -193,12 +193,12 @@ DG.DocumentController = SC.Object.extend(
       return this.get('canBeCopied');
     }.property('canBeCopied'),
 
-      /**
-       * Set when save is in progress
-       */
-      saveInProgress: null,
+    /**
+     * Set when save is in progress
+     */
+    saveInProgress: null,
 
-      init: function() {
+    init: function() {
       sc_super();
 
       this._singletonViews = {};
@@ -565,16 +565,14 @@ DG.DocumentController = SC.Object.extend(
         }
       }
 
-      if( tComponentView) {
-        // Tell the controller about the new view, whose layout we will need when archiving.
-        if (iParams.controller) {
-          iParams.controller.set('view', tComponentView);
-          tComponentView.set('controller', iParams.controller);
-        }
-        tComponentView.set('model', tComponent);
-
-        DG.dirtyCurrentDocument();
+      // Tell the controller about the new view, whose layout we will need when archiving.
+      if( iParams.controller) {
+        iParams.controller.set('view', tComponentView);
+        tComponentView.set('controller', iParams.controller);
       }
+
+      if( tComponentView)
+        DG.dirtyCurrentDocument();
 
       return tComponentView;
     },
@@ -795,14 +793,13 @@ DG.DocumentController = SC.Object.extend(
     },
 
     addSlider: function( iParentView, iComponent) {
-      var tView, sliderController, docController = this;
+      var tView, sliderController, modelProps = {}, docController = this;
 
       DG.UndoHistory.execute(DG.Command.create({
         name: "sliderComponent.create",
         undoString: 'DG.Undo.sliderComponent.create',
         redoString: 'DG.Redo.sliderComponent.create',
         execute: function() {
-          var modelProps = {};
           if( !iComponent || !iComponent.get('componentStorage'))
             modelProps.content = docController.createGlobalValue();
           var tSliderModel = DG.SliderModel.create( modelProps);
@@ -820,8 +817,8 @@ DG.DocumentController = SC.Object.extend(
         undo: function() {
           // Store the component so that when we redo, we'll get the same global variable (v1, v2, etc.)
           sliderController.willSaveComponent();
-          iComponent = sliderController.get('model');
           tView.parentView.removeComponentView(tView);
+          DG.globalsController.destroyGlobalValue(modelProps.content);
         }
       }));
       return tView;

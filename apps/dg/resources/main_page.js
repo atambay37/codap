@@ -19,40 +19,37 @@
 // This page describes the main user interface for your application.  
 DG.mainPage = SC.Page.design((function() {
 
-  var kButtonWidth = 40,
-      kToolbarHeight = 70,
-      kInfobarHeight = 30,
-      kIconTopPadding = 18;
-
+  var
+      kToolbarHeight = 44,
+      kInfobarHeight = 24;
+  
   // begin compatible browser main page design
   return DG.Browser.isCompatibleBrowser() ? {
 
   // The main pane is made visible on screen as soon as your app is loaded.
   // Add childViews to this pane for views to display immediately on page load.
   mainPane: SC.MainPane.design({
-    childViews: 'navBar topView scrollView inspectorPalette'.w(),
+    childViews: 'infoBar topView scrollView'.w(),
 
-    navBar: SC.View.design({
-      classNames: 'navBar'.w(),
-      layout: { height: kInfobarHeight },
+    infoBar: SC.ToolbarView.design({
+      classNames: 'infobar'.w(),
+      layout: { top: 0, height: kInfobarHeight },
       childViews: 'leftSide rightSide'.w(),
       anchorLocation: SC.ANCHOR_TOP,
 
       leftSide: SC.View.design(SC.FlowedLayout, {
-        layout: { width: 0, left: 5, height: kInfobarHeight, zIndex: 1  },
-        childViews: 'documentTitle navPopupButton saveNotification'.w(),
-        defaultFlowSpacing: { left: 5, right: 5, top: (kInfobarHeight - 18) / 2},
-        canWrap: false,
-        shouldResizeHeight: false,
+        layout: { top: 3, left: 5, height: kInfobarHeight, zIndex: 1  },
+        childViews: 'documentTitle titleEditButton saveNotification'.w(),
+        defaultFlowSpacing: { left: 0, right: 5, top: 0, bottom: 0 },
 
         documentTitle: SC.LabelView.design(SC.AutoResize, {
-          classNames: 'doc-title'.w(),
           layout: { height: 18 },
-          toolTip: 'DG.Document.documentName.toolTip'.loc(),  // "Click to edit document name"
-          localize: true,
+          fontWeight: SC.BOLD_WEIGHT,
+          textAlign: SC.ALIGN_LEFT,
           needsEllipsis: YES,
           isEditable: YES,
           valueBinding: 'DG._currDocumentController.documentName',
+          toolTipBinding: 'DG._currDocumentController.documentName',
           originalValue: null,
           inlineEditorDidBeginEditing: function(editor, value) {
             this.set('originalValue', value);
@@ -72,16 +69,15 @@ DG.mainPage = SC.Page.design((function() {
           }
         }),
 
-        navPopupButton: DG.IconButton.design( {
-          layout: { width: 20 },
-          flowSpacing: { left: 0, top: 2, right: 5 },
-          iconName: static_url('images/caret-down.png'),
-          depressedIconName: static_url('images/caret-down.png'),
-          target: 'DG.appController.fileMenuPane',
-          action: 'popup',
-          toolTip: 'DG.Document.documentPopup.toolTip',  // "Open, Save, Close, Import, Export, ..."
-          localize: true,
-          iconExtent: { width: 12, height: 21 }
+        titleEditButton: SC.LabelView.design({
+          layout: { height: 14, width: 12 },
+          textAlign: SC.ALIGN_LEFT,
+          escapeHTML: NO,
+          value: '<img style="margin-top: 2px;" src="' + static_url('images/pencil.png') + '" />',
+          tooltip: 'Rename document.',
+          click: function() {
+            this.getPath('parentView.documentTitle').beginEditing();
+          }
         }),
 
         saveNotification: SC.LabelView.design(SC.AutoResize, {
@@ -93,54 +89,35 @@ DG.mainPage = SC.Page.design((function() {
       }),
 
       rightSide: SC.View.design(SC.FlowedLayout, {
-        layout: { width: 0, right: 0 },
-        classNames: 'right-side'.w(),
-        childViews: 'statusLabel versionLabel helpButton'.w(),
+        layout: { top: 3, right: 5, height: kInfobarHeight, zIndex: 0 },
+        childViews: 'statusLabel versionLabel'.w(),
         align: SC.ALIGN_RIGHT,
-        canWrap: false,
-        shouldResizeHeight: false,
-        defaultFlowSpacing: { top: (kInfobarHeight - 18) / 2 },
+        defaultFlowSpacing: { left: 5, right: 0, top: 0, bottom: 0 },
 
         versionLabel: SC.LabelView.design(SC.AutoResize, {
           layout: { height: 18 },
+          fontWeight: SC.BOLD_WEIGHT,
           textAlign: SC.ALIGN_RIGHT,
           value: DG.getVariantString('DG.mainPage.mainPane.versionString').loc( DG.VERSION, DG.BUILD_NUM )
         }),
 
         statusLabel: SC.LabelView.design(SC.AutoResize, {
           layout: { height: 18 },
-          flowSpacing: { right: 25, top: (kInfobarHeight - 18) / 2 },
           textAlign: SC.ALIGN_RIGHT,
           currUsernameBinding: 'DG.authorizationController.currLogin.user',
           value: function() {
-            return this.get('currUsername');
+            return 'User: ' + this.get('currUsername');
           }.property('currUsername')
-        }),
-
-        helpButton: DG.IconButton.design( {
-          layout: { width: 15 },
-          flowSpacing: { left: 5, top: 7, right: 5 },
-          iconName: static_url('images/icon-help.svg'),
-          depressedIconName: static_url('images/icon-help.svg'),
-          target: 'DG.appController',
-          action: 'showHelp',
-          toolTip: 'DG.ToolButtonData.help.toolTip',  // "Open a web view showing help for CODAP"
-          localize: true,
-          iconExtent: { width: 15, height: 15 }
         })
       }),
 
-      /**
-       * We have a chance to adjust layout.
-       */
- /*     sideCalculatedWidthDidChange: function( iView, iKey) {
-        var tWidth = iView.get('calculatedWidth');
-        iView.adjust('width', tWidth);
-      }.observes('leftSide.calculatedWidth', 'rightSide.calculatedWidth')
-*/
+      init: function() {
+        sc_super();
+      }
+
     }),
 
-    topView: SC.View.design({
+    topView: SC.ToolbarView.design({
       classNames: 'toolshelf-background'.w(),
       layout: { top: kInfobarHeight, height: kToolbarHeight - 1 },
       childViews: 'iconButtons rightButtons'.w(),
@@ -165,41 +142,15 @@ DG.mainPage = SC.Page.design((function() {
 
       }),
 
-      rightButtons: SC.View.design(SC.FlowedLayout, {
-        layout: { top: 0, right: 10, width: 0, height: kToolbarHeight - 1 },
-        align: SC.ALIGN_RIGHT,
-        canWrap: false,
-        shouldResizeHeight: false,
-        defaultFlowSpacing: { right: 10, top: kIconTopPadding },
-        childViews: 'logoutButton'.w(),
-
-        logoutButton: SC.ButtonView.design({
-          layout: { centerY:0, height:24, width:80 },
-          localize: true,
-          title: (DG.documentServer ? 'DG.Authorization.loginPane.login' : 'DG.mainPage.mainPane.logoutButton.title'), // "Logout"
-          target: 'DG.appController',
-          action: 'logout',
-          userBinding: 'DG.authorizationController.currLogin.user',
-          isVisible: function() {
-            return DG.documentServer && this.get('user') === 'guest';
-          }.property('user'),
-          toolTip: (DG.documentServer ? 'DG.Authorization.loginPane.login' : 'DG.mainPage.mainPane.logoutButton.toolTip'),  // "Log out the current user"
-          userDidChange: function () {
-            var user = this.get('user');
-            this.set('title', DG.documentServer && user === 'guest' ?
-                'DG.Authorization.loginPane.login' : 'DG.mainPage.mainPane.logoutButton.title'); // "Logout"
-          }.observes('user')
-        }),
-        init: function() {
-          sc_super();
-          // create right buttons, right-justified
-          DG.rightButtons.forEach( function( iButtonName ) {
-            var tButton = DG.RightButtonData[iButtonName];
-            this[ iButtonName] = DG.IconButton.create( tButton);
-            this[ iButtonName].set('layout', { width: kButtonWidth });
-            this.appendChild( this[ iButtonName ]);
-          }.bind(this));
-          DG.currDocumentController().set('guideButton', this.guideButton);
+      init: function() {
+        sc_super();
+        function moveHorizontal( iChildView, iNewLeft ) {
+          // move child view by updating its left-hand position
+          var tLayout = iChildView.get('layout'),
+              tNewRight = iNewLeft + tLayout.width;
+          tLayout.left = iNewLeft;
+          iChildView.set( 'layout', tLayout );
+          return tNewRight;
         }
       })
 
@@ -211,11 +162,6 @@ DG.mainPage = SC.Page.design((function() {
       alwaysBounceVertical: false,
       contentView: DG.ContainerView.design( {
       })
-    }),
-
-    inspectorPalette: DG.InspectorView.design( {
-      layout: { right: 0, top: 100, height: 50, width: 50 },
-      classNames: 'inspector-palette'.w()
     }),
     
     flagsChanged: function( iEvent) {
@@ -365,7 +311,7 @@ DG.mainPage = SC.Page.design((function() {
           DG.mainPage.toggleCalculator();
           break;
         case 'alt_ctrl_t':
-          DG.mainPage.openCaseTablesForEachContext();
+          DG.mainPage.toggleCaseTable();
           break;
         case 'alt_ctrl_g':
           DG.mainPage.addGraph();
@@ -375,13 +321,6 @@ DG.mainPage = SC.Page.design((function() {
           break;
         case 'alt_ctrl_shift_t':
           DG.mainPage.addText();
-          break;
-        case 'ctrl_z':
-          DG.UndoHistory.undo();
-          break;
-        case 'ctrl_y':
-        case 'ctrl_shift_z':
-          DG.UndoHistory.redo();
           break;
         default:
           tResult = sc_super();
@@ -459,8 +398,16 @@ DG.mainPage.openCaseTablesForEachContext = function () {
   DG.currDocumentController().openCaseTablesForEachContext();
 };
 
-DG.mainPage.addMap = function() {
-  DG.currDocumentController().addMap( this.get('docView'));
+DG.mainPage.toggleCaseTable = function() {
+
+  DG.currDocumentController().
+      toggleComponent( this.get('docView'), 'caseTableView');
+};
+
+DG.mainPage.toggleMap = function() {
+
+  DG.currDocumentController().
+      toggleComponent( this.get('docView'), 'mapView');
 };
 
 DG.mainPage.addSlider = function() {

@@ -22,83 +22,82 @@
 
 /** @class
 
-    DG.TitleBarButtonView shows a close button for a component view.
+  DG.TitleBarButtonView shows a close button for a component view.
 
- @extends SC.ImageView
- */
+  @extends SC.ImageView
+*/
 DG.TitleBarButtonView = SC.ImageView.extend(
-    /** @scope DG.TitleBarButtonView.prototype */
-    (function () {
-      var tClose = static_url('images/icon-ex.svg'),
-          tClose_cross = static_url('images/icon-ex.svg'),
-          tClose_cross_dark = static_url('images/icon-ex.svg');
+/** @scope DG.TitleBarButtonView.prototype */ 
+  (function() {
+    var tClose = static_url('images/closeicon.png'),
+        tClose_cross = static_url('images/closeicon_cross.png'),
+        tClose_cross_dark = static_url('images/closeicon_cross_dark.png');
 
-      // We only need to preload once, so do it here.
-      SC.imageQueue.loadImage(tClose_cross);
-      SC.imageQueue.loadImage(tClose_cross_dark);
+    // We only need to preload once, so do it here.
+    SC.imageQueue.loadImage( tClose_cross);
+    SC.imageQueue.loadImage( tClose_cross_dark);
 
-      return {
-        classNames: 'close-icon'.w(),
-        value: function () {
-          if (this.get('isMouseOver')) {
-            if (this.get('isActive'))
+    return {
+        value: function() {
+          if( this.get( 'isMouseOver')) {
+            if( this.get( 'isActive'))
               return tClose_cross_dark;
             else
               return tClose_cross;
           }
-          else if (this.get('isMouseDown'))
+          else if( this.get( 'isMouseDown'))
             return tClose_cross;
           else
             return tClose;
-        }.property('isMouseDown', 'isActive', 'isMouseOver').cacheable(),
-        preloadIcons: function () {
+        }.property( 'isMouseDown', 'isActive', 'isMouseOver').cacheable(),
+        preloadIcons: function() {
         },
         isMouseDown: NO,
         isMouseOver: NO,
         isActive: NO,
-        mouseMoved: function (evt) {
-          this.mouseOver(evt);
+        mouseMoved: function( evt) {
+          this.mouseOver( evt);
           return YES;
         },
-        mouseOver: function (evt) {
-          if (this.get('isMouseDown')) {
-            this.set('isActive', YES);
+        mouseOver: function(evt) {
+          if( this.get( 'isMouseDown')) {
+            this.set( 'isActive', YES);
           }
-          this.set('isMouseOver', YES);
+          this.set( 'isMouseOver', YES);
           return YES;
         },
-        mouseExited: function (evt) {
-          this.set('isActive', NO);
-          this.set('isMouseOver', NO);
+        mouseExited: function(evt) {
+          this.set( 'isActive', NO);
+          this.set( 'isMouseOver', NO);
           return YES;
         },
-        mouseDown: function (evt) {
-          if (!this.get('isMouseDown')) {
-            this.set('isMouseDown', YES);
-            this.set('isActive', YES);
+        mouseDown: function(evt) {
+          if( !this.get( 'isMouseDown')) {
+            this.set( 'isMouseDown', YES);
+            this.set( 'isActive', YES);
           }
           return YES; // so we get other events
         },
-        mouseUp: function (evt) {
-          if (this.get('isActive')) {
-            this.set('isActive', NO);
-            this.set('isMouseOver', NO);
-            this.set('isMouseDown', NO);
+        mouseUp: function(evt) {
+          if( this.get( 'isActive')) {
+            this.set( 'isActive', NO);
+            this.set( 'isMouseOver', NO);
+            this.set( 'isMouseDown', NO);
             this.closeIt();
           }
           else {
-            this.set('isMouseDown', NO);
-            this.mouseExited(evt);
+            this.set( 'isMouseDown', NO);
+            this.mouseExited( evt);
           }
           return YES; // so we get other events
         },
-        touchStart: function (iTouch) {
+        touchStart: function( iTouch) {
           return YES;
         },
-        touchEnd: function (iTouch) {
+        touchEnd: function( iTouch) {
           this.closeIt();
         },
-        closeIt: function () {
+        closeIt: function() {
           var tComponent, tController,
               tComponentView = this.parentView.viewToDrag(),
               tState;
@@ -106,7 +105,7 @@ DG.TitleBarButtonView = SC.ImageView.extend(
             name: 'component.close',
             undoString: 'DG.Undo.component.close',
             redoString: 'DG.Redo.component.close',
-            execute: function () {
+            execute: function() {
               var tContainerView = tComponentView.parentView;
 
               tController = tComponentView.get('controller');
@@ -119,17 +118,17 @@ DG.TitleBarButtonView = SC.ImageView.extend(
                 // until it is complete (or it will fail).
                 // Also, since closing the document will happen after this command executes, dirtying the
                 // document will clear the undo history, so we must force it not to dirty.
-                tController.saveGameState(function (result) {
+                tController.saveGameState(function(result) {
                   if (result && result.success) {
                     tState = result.state;
                   }
-                  tContainerView.removeComponentView(tComponentView, true);
+                  tContainerView.removeComponentView( tComponentView, true);
                 });
               } else {
-                tContainerView.removeComponentView(tComponentView);
+                tContainerView.removeComponentView( tComponentView);
               }
             },
-            undo: function () {
+            undo: function() {
               tComponentView = DG.currDocumentController().createComponentAndView(tComponent);
 
               if (tController.restoreGameState && tState) {
@@ -138,6 +137,6 @@ DG.TitleBarButtonView = SC.ImageView.extend(
             }
           }));
         }
-      };
-    }()) // function closure
+    };
+  }()) // function closure
 );
