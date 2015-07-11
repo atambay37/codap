@@ -69,7 +69,8 @@ DG.DragBorderView = SC.View.extend(
       mouseUp: function (evt) {
         var tContainer = this.viewToDrag().get('parentView'),
             tOldLayout = this._mouseDownInfo,
-            tNewLayout = this.viewToDrag().get('layout');
+            tNewLayout = this.viewToDrag().get('layout'),
+            isResize = (!SC.none(this.getPath('cursor.cursorStyle'))) && this.getPath('cursor.cursorStyle').indexOf('-resize') !== -1;
         // apply one more time to set final position
         this.mouseDragged(evt);
         this._mouseDownInfo = null; // cleanup info
@@ -77,7 +78,21 @@ DG.DragBorderView = SC.View.extend(
         tContainer.set('frameNeedsUpdate', true);
         if( (tOldLayout.left !== tNewLayout.left) || (tOldLayout.top !== tNewLayout.top) ||
             (tOldLayout.height !== tNewLayout.height) || (tOldLayout.width !== tNewLayout.width)) {
-          DG.dirtyCurrentDocument();
+
+          DG.UndoHistory.execute(DG.Command.create({
+            name: (isResize ? 'component.resize' : 'component.move'),
+            undoString: (isResize ? 'DG.Undo.componentResize' : 'DG.Undo.componentMove'),
+            redoString: (isResize ? 'DG.Redo.componentResize' : 'DG.Redo.componentMove'),
+            execute: function() { DG.dirtyCurrentDocument(); },
+            undo: function() {
+              this.viewToDrag().set('layout', tOldLayout);
+              tContainer.set('frameNeedsUpdate', true);
+            }.bind(this),
+            redo: function() {
+              this.viewToDrag().set('layout', tNewLayout);
+              tContainer.set('frameNeedsUpdate', true);
+            }.bind(this)
+          }));
         }
         return YES; // handled!
       },
@@ -155,19 +170,47 @@ DG.ComponentView = SC.View.extend(
       contentView: SC.outlet('containerView.contentView'),
       childViews: 'containerView borderRight borderBottom borderLeft borderTop borderCorner'.w(),
       containerView: SC.View.design({
-        // By insetting the container view by half the drag width, we fix a "box model" problem
-        // on IE that prevents easy access to the drag views.
-        layout: { left: kDragWidth / 2, bottom: kDragWidth / 2, right: kDragWidth / 2 },
-        gearView: SC.outlet('titlebar.gearView'),
+        layout: { left: 0, bottom: 0, right: 0 },
         childViews: 'titlebar coverSheet'.w(),
         titlebar: DG.DragBorderView.design({
           layout: { height: kTitleBarHeight },
-          backgroundColor: 'gray',
-          childViews: 'titleView statusView versionView closeBox gearView'.w(),
-          titleView: SC.LabelView.design({
-            classNames: ['dg-title-view'],
-            textAlign: SC.ALIGN_CENTER,
-            value: ''
+          classNames: ['titlebar'],
+          childViews: 'statusView versionView closeBox titleView'.w(), // gearView
+          titleView: SC.LabelView.design(SC.AutoResize, {
+            classNames: ['titleview'],
+            isEditable: YES,
+            _value: null,
+            value: function( key, iValue) {
+              if( !SC.none( iValue)) {
+                this._value = iValue;
+              }
+              if( SC.none( this._value)) {
+                var tComponentView = DG.ComponentView.findComponentViewParent(this);
+                this._value = tComponentView ? tComponentView.getPath('model.title') : '';
+              }
+              return this._value;
+            }.property(),
+            originalValue: null,
+            inlineEditorDidBeginEditing: function(editor, value) {
+              this.set('originalValue', value);
+            },
+            valueChanged: function() {
+              var tComponentView = DG.ComponentView.findComponentViewParent(this);
+              tComponentView.setPath('model.title', this.get('value'));
+              this.set('originalValue', null);
+              return true;
+            }.observes('value'),
+            mouseDown: function() {
+              return true;
+            },
+            mouseUp: function() {
+              this.click();
+              return true;
+            },
+            click: function() {
+              this.beginEditing();
+              return true;
+            }
           }),
           statusView: SC.LabelView.design({
             textAlign: SC.ALIGN_LEFT,
@@ -184,12 +227,17 @@ DG.ComponentView = SC.View.extend(
           closeBox: DG.TitleBarButtonView.design({
             layout: { left: 0, top: 0, width: kTitleBarHeight, height: kTitleBarHeight },
             classNames:['dg-close-view'],
-            scale: SC.SCALE_NONE
+            scale: SC.SCALE_NONE,
+            isVisible: false
           }),
-          gearView: DG.TitleBarGearView.design({
-            layout: { right: 5, centerY: 0, width: 16, height: 16 },
-            classNames:['dg-gear-view']
-          }),
+          mouseEntered: function (evt) {
+            this.setPath('closeBox.isVisible', true);
+            return YES;
+          },
+          mouseExited: function (evt) {
+            this.setPath('closeBox.isVisible', false);
+            return YES;
+          },
           dragAdjust: function (evt, info) {
             var tOuterView = this.viewToDrag(),
               tX = info.left + (evt.pageX - info.pageX),
@@ -216,7 +264,6 @@ DG.ComponentView = SC.View.extend(
         classNames: ['component-border'],
         setContentView: function (iContentView) {
           this.set('contentView', iContentView);
-          this.get('gearView').set('contentView', iContentView);
         }
 
       }), // containerView
@@ -290,8 +337,19 @@ DG.ComponentView = SC.View.extend(
           }
         }),
 
-      title: null,
-      titleBinding: '.containerView.titlebar.titleView.value',
+      _title: '',
+      title: function( iKey, iValue) {
+        if( iValue) {
+          this.setPath('containerView.titlebar.titleView.value', iValue);
+          this._title = iValue;
+        }
+        return this._title;
+      }.property(),
+
+      modelTitleChanged: function( iModel, iKey, iValue) {
+        if( !SC.none( iValue))
+          this.set('title', iValue);
+      }.observes('model.title'),
 
       version: null,
       versionBinding: '.containerView.titlebar.versionView.value',
@@ -346,42 +404,30 @@ DG.ComponentView = SC.View.extend(
 );
 
 DG.ComponentView._createComponent = function (iComponentLayout, iComponentClass,
-                                              iContentProperties, iTitle,
-                                              iIsResizable, iIsVisible) {
+                                              iContentProperties, iIsResizable, iIsVisible) {
+  SC.Benchmark.start('createComponent: '+iComponentClass);
 
   var tComponentView = DG.ComponentView.create({ layout: iComponentLayout });
   tComponentView.addContent(iComponentClass.create(iContentProperties));
-
-  // The bindings are connected at the end of the run-loop.
-  // When init-time bindings are connected, the initial synchronization
-  // pulls the value from the remote property. Therefore, we must wait
-  // to set the title until after the binding has been connected.
-  tComponentView.invokeLast(function () {
-
-    if (!SC.empty(iTitle))
-      tComponentView.set('title', iTitle);
-    SC.Benchmark.start('createComponent: '+iTitle);
-    DG.logUser("componentCreated: %@", iTitle);
-    SC.Benchmark.end('createComponent: '+iTitle);
-    SC.Benchmark.log('createComponent: '+iTitle);
-  });
 
   if (!SC.none(iIsResizable))
     tComponentView.set('isResizable', iIsResizable);
   if (!SC.none(iIsVisible))
     tComponentView.set('isVisible', iIsVisible);
 
+  DG.logUser("componentCreated: %@", iComponentClass);
+  SC.Benchmark.end('createComponent: '+iComponentClass);
+  SC.Benchmark.log('createComponent: '+iComponentClass);
   return tComponentView;
 };
 
 DG.ComponentView.restoreComponent = function (iSuperView, iComponentLayout,
                                               iComponentClass, iContentProperties,
-                                              iTitle, iIsResizable,
+                                              iIsResizable,
                                               iUseLayoutForPosition, iIsVisible) {
 
   var tComponentView = this._createComponent(iComponentLayout, iComponentClass, iContentProperties,
-    iTitle, iIsResizable,
-    iIsVisible);
+      iIsResizable, iIsVisible);
   //default to use the existing layout if present, even when requested otherwise.
   if (SC.none(iUseLayoutForPosition)&& !SC.none(iComponentLayout.left) &&
     !SC.none(iComponentLayout.top)) {
@@ -406,7 +452,8 @@ DG.ComponentView.restoreComponent = function (iSuperView, iComponentLayout,
  * @param iIsResizable
  * @param iUseLayoutForPosition - if true, forgo auto-positioning and just use the layout.
  */
-DG.ComponentView.addComponent = function (iSuperView, iComponentLayout, iComponentClass, iContentProperties, iTitle, iIsResizable, iUseLayoutForPosition, iIsVisible) {
+DG.ComponentView.addComponent = function (iSuperView, iComponentLayout, iComponentClass, iContentProperties,
+                                          iIsResizable, iUseLayoutForPosition, iIsVisible) {
   iUseLayoutForPosition = iUseLayoutForPosition || false;
   if (!SC.none(iComponentLayout.width))
     iComponentLayout.width += DG.ViewUtilities.horizontalPadding();
@@ -414,8 +461,7 @@ DG.ComponentView.addComponent = function (iSuperView, iComponentLayout, iCompone
     iComponentLayout.height += DG.ViewUtilities.verticalPadding();
 
   var tComponentView = this._createComponent(iComponentLayout, iComponentClass,
-    iContentProperties, iTitle, iIsResizable,
-    iIsVisible);
+      iContentProperties, iIsResizable, iIsVisible);
 
   if (!iUseLayoutForPosition)
     iSuperView.positionNewComponent(tComponentView);

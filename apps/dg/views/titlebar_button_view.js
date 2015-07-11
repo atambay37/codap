@@ -22,59 +22,60 @@
 
 /** @class
 
-  DG.TitleBarButtonView shows a close button for a component view.
+    DG.TitleBarButtonView shows a close button for a component view.
 
-  @extends SC.ImageView
-*/
+ @extends SC.ImageView
+ */
 DG.TitleBarButtonView = SC.ImageView.extend(
-/** @scope DG.TitleBarButtonView.prototype */ 
-  (function() {
-    var tClose = static_url('images/closeicon.png'),
-        tClose_cross = static_url('images/closeicon_cross.png'),
-        tClose_cross_dark = static_url('images/closeicon_cross_dark.png');
+    /** @scope DG.TitleBarButtonView.prototype */
+    (function () {
+      var tClose = static_url('images/icon-ex.svg'),
+          tClose_cross = static_url('images/icon-ex.svg'),
+          tClose_cross_dark = static_url('images/icon-ex.svg');
 
     // We only need to preload once, so do it here.
-    SC.imageQueue.loadImage( tClose_cross);
-    SC.imageQueue.loadImage( tClose_cross_dark);
+      SC.imageQueue.loadImage(tClose_cross);
+      SC.imageQueue.loadImage(tClose_cross_dark);
 
     return {
-        value: function() {
-          if( this.get( 'isMouseOver')) {
-            if( this.get( 'isActive'))
+        classNames: 'close-icon'.w(),
+        value: function () {
+          if (this.get('isMouseOver')) {
+            if (this.get('isActive'))
               return tClose_cross_dark;
             else
               return tClose_cross;
           }
-          else if( this.get( 'isMouseDown'))
+          else if (this.get('isMouseDown'))
             return tClose_cross;
           else
             return tClose;
-        }.property( 'isMouseDown', 'isActive', 'isMouseOver').cacheable(),
-        preloadIcons: function() {
+        }.property('isMouseDown', 'isActive', 'isMouseOver').cacheable(),
+        preloadIcons: function () {
         },
         isMouseDown: NO,
         isMouseOver: NO,
         isActive: NO,
-        mouseMoved: function( evt) {
-          this.mouseOver( evt);
+        mouseMoved: function (evt) {
+          this.mouseOver(evt);
           return YES;
         },
-        mouseOver: function(evt) {
-          if( this.get( 'isMouseDown')) {
-            this.set( 'isActive', YES);
+        mouseOver: function (evt) {
+          if (this.get('isMouseDown')) {
+            this.set('isActive', YES);
           }
-          this.set( 'isMouseOver', YES);
+          this.set('isMouseOver', YES);
           return YES;
         },
-        mouseExited: function(evt) {
-          this.set( 'isActive', NO);
-          this.set( 'isMouseOver', NO);
+        mouseExited: function (evt) {
+          this.set('isActive', NO);
+          this.set('isMouseOver', NO);
           return YES;
         },
-        mouseDown: function(evt) {
-          if( !this.get( 'isMouseDown')) {
-            this.set( 'isMouseDown', YES);
-            this.set( 'isActive', YES);
+        mouseDown: function (evt) {
+          if (!this.get('isMouseDown')) {
+            this.set('isMouseDown', YES);
+            this.set('isActive', YES);
           }
           return YES; // so we get other events
         },

@@ -565,14 +565,16 @@ DG.DocumentController = SC.Object.extend(
         }
       }
 
-      // Tell the controller about the new view, whose layout we will need when archiving.
-      if( iParams.controller) {
-        iParams.controller.set('view', tComponentView);
-        tComponentView.set('controller', iParams.controller);
-      }
+      if( tComponentView) {
+        // Tell the controller about the new view, whose layout we will need when archiving.
+        if (iParams.controller) {
+          iParams.controller.set('view', tComponentView);
+          tComponentView.set('controller', iParams.controller);
+        }
+        tComponentView.set('model', tComponent);
 
-      if( tComponentView)
         DG.dirtyCurrentDocument();
+      }
 
       return tComponentView;
     },
