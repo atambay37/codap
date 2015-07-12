@@ -186,7 +186,7 @@ DG = SC.Application.create((function () // closure
     /*
      * Semantic version number
      */
-    VERSION: '2.0 ⍺2',
+    VERSION: '2.0 ⍺3',
 
     /*
      * Build number

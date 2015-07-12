@@ -63,7 +63,7 @@ DG.ContainerView = SC.View.extend(
           return iChildView instanceof DG.ComponentView;
         });
       }.property( 'childViews'),
-      
+
       /**
         Computes/returns the bounding rectangle for the view.
        */
@@ -140,6 +140,28 @@ DG.ContainerView = SC.View.extend(
         return this;
       },
 
+      /**
+       * @property{DG.ComponentView}
+       */
+      selectedChildView: null,
+
+      /**
+       * The given child view will become the currently selected childView.
+       * @param iChildView
+       */
+      select: function( iChildView) {
+        var tCurrentSelected = this.get('selectedChildView');
+        if( iChildView !== tCurrentSelected) {
+          if( tCurrentSelected)
+            tCurrentSelected.set('isSelected', false);
+          this.set('selectedChildView', iChildView);
+          if( iChildView) {
+            iChildView.set('isSelected', true);
+            this.bringToFront(iChildView);
+          }
+        }
+      },
+
       /* bringToFront - The given child view will be placed at the end of the list, thus
         rendered last and appearing in front of all others.
         Note: For the flash view this has the very undesirable effect of causing the 
@@ -181,6 +203,9 @@ DG.ContainerView = SC.View.extend(
                                       this.get('componentViews'));
         iView.adjust( 'left', tLoc.x);
         iView.adjust( 'top', tLoc.y);
+        this.invokeLast( function() {
+          this.select( iView);
+        }.bind( this));
       },
       
       /** coverUpComponentViews - Request each component view to cover up its contents with a see-through layer.
@@ -192,6 +217,12 @@ DG.ContainerView = SC.View.extend(
         this.get('componentViews').forEach( function( iView) {
           iView.cover( iAction);
         });
+      },
+
+      mouseDown: function( iEvent) {
+        console.log('mouseDown in containerView');
+        this.select(null);
+        return true;
       }
 
     };  // object returned closure

@@ -21,7 +21,6 @@
 // ==========================================================================
 
 sc_require('views/titlebar_button_view');
-sc_require('views/titlebar_gear_view');
 
 /** @class
 
@@ -49,7 +48,7 @@ DG.DragBorderView = SC.View.extend(
         // Make sure the enclosing view will be movable
         DG.ViewUtilities.convertViewLayoutToAbsolute(tView);
         // A click on a border should bring the view to the front
-        tView.bringToFront();
+        tView.select();
         if (!this.canBeDragged())
           return NO;  // We won't get other events either
         tView.get('parentView').coverUpComponentViews('cover');
@@ -165,8 +164,20 @@ DG.ComponentView = SC.View.extend(
       ;
     return {
       classNames: ['component-view'],
+      classNameBindings: ['isSelected:component-view-selected'],
       isResizable: YES,
       isClosable: YES,
+
+      /**
+       * Is this component view the one selected component view in the container?
+       * @property {Boolean}
+       */
+      isSelected: false,
+
+      isSelectedChanged: function() {
+        this.setPath('containerView.titlebar.isSelected', this.get('isSelected'));
+      }.observes('isSelected'),
+
       contentView: SC.outlet('containerView.contentView'),
       childViews: 'containerView borderRight borderBottom borderLeft borderTop borderCorner'.w(),
       containerView: SC.View.design({
@@ -175,7 +186,9 @@ DG.ComponentView = SC.View.extend(
         titlebar: DG.DragBorderView.design({
           layout: { height: kTitleBarHeight },
           classNames: ['titlebar'],
-          childViews: 'statusView versionView closeBox titleView'.w(), // gearView
+          isSelected: false,
+          classNameBindings: ['isSelected:titlebar-selected'],
+          childViews: 'statusView versionView closeBox titleView'.w(),
           titleView: SC.LabelView.design(SC.AutoResize, {
             classNames: ['titleview'],
             isEditable: YES,
@@ -381,12 +394,15 @@ DG.ComponentView = SC.View.extend(
         this.containerView.appendChild(iView);
         this.containerView.setContentView(iView);
       },
+      select: function () {
+        this.parentView.select(this);
+      },
       bringToFront: function () {
         this.parentView.bringToFront(this);
       },
       mouseDown: function(evt) {
-        this.bringToFront();
-        return false;
+        this.select();
+        return true;
       },
       contentIsInstanceOf: function( aPrototype) {
         return this.get('contentView') instanceof aPrototype;

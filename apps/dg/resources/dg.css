@@ -78,10 +78,18 @@
     color: rgba(255,255,255,0.5);
 }
 
+.draggable {
+    cursor: move;
+}
+
 .inspector-palette {
     background-color: #01879E;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
+}
+
+.inspector-cover {
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 .drag-label {
@@ -216,17 +224,32 @@
 
 .component-view {
     background-color: #f0f0f0;
+    /*
     -webkit-box-shadow: 0px 1px 1px 1px #888888;
     -moz-box-shadow: 0px 1px 1px 1px #888888;
     -ie-box-shadow: 0px 1px 1px 1px #888888;
-    box-shadow: 0px 1px 1px 1px #888888;
+    */
+    box-shadow: 0px 1px 1px rgba(136, 136, 136, 0.55);
     border-radius:6px;
+}
+
+.component-view-selected {
+    /*
+    -webkit-box-shadow: 0px 1px 1px 1px #888888;
+    -moz-box-shadow: 0px 1px 1px 1px #888888;
+    -ie-box-shadow: 0px 1px 1px 1px #888888;
+    */
+    box-shadow: 0px 5px 5px 2px rgba(136, 136, 136, 0.55);
 }
 
 .titlebar {
     background-color: #72bfca;
     border-top-right-radius:6px;
     border-top-left-radius:6px;
+}
+
+.titlebar-selected {
+    background-color: #177991;
 }
 
 .close-icon {

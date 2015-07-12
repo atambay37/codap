@@ -601,6 +601,9 @@ SC.stringsFor('English', {
     'DG.MapView.showPoints': "Show Points",  // "Show Points"
     'DG.MapView.hidePoints': "Hide Points",  // "Hide Points"
     'DG.MapView.marqueeHint': "Marquee tool—drag select points in map",  // "Marquee tool—drag select points in map"
-    'DG.MapView.gridControlHint': "Change size of grid rectangles"  // "Change size of grid rectangles"
+    'DG.MapView.gridControlHint': "Change size of grid rectangles",  // "Change size of grid rectangles"
+
+      // Inspector
+      'DG.Inspector.rescale.toolTip': "Rescale graph axes to encompass data"  // "Rescale graph axes to encompass data"
   }
 ) ;

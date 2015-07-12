@@ -56,7 +56,7 @@ DG.IconButton = SC.View.extend(
         }),
         labelView: SC.LabelView.design({
           classNames: ['icon-label'],
-          layout: { height: 15 },
+          //layout: { height: 15 },
           textAlign: SC.ALIGN_CENTER,
           valueBinding: '.parentView.title',
           localizeBinding: '.parentView.localize'
@@ -64,12 +64,24 @@ DG.IconButton = SC.View.extend(
       
       init: function() {
         sc_super();
+        var tTitleIsEmpty = SC.empty( this.get('title')),
+            tLabelHeight = tTitleIsEmpty ? 0 : 15;
         this.iconView.set('layout',
           { top: 0, centerX: 0, height: this.iconExtent.height, width: this.iconExtent.width });
         this.labelView.adjust('top', this.iconExtent.height);
-        this.labelView.set('isVisible', !SC.empty( this.get('title')));
+        this.labelView.adjust('height', tLabelHeight);
+        this.labelView.set('isVisible', !tTitleIsEmpty);
+        this.adjust('height', this.iconExtent.height + tLabelHeight);
         // Preload depressed icon image
         SC.imageQueue.loadImage( this.depressedIconName);
+      },
+
+      /**
+       * When part of a FlowedLayout, our height can get messed with, and this can cause a popup to
+       * displayed in an inconvenient place.
+       */
+      adjustHeight: function() {
+        this.adjust('height', this.getPath('iconView.layout').height + this.getPath('labelView.layout').height);
       },
       
       isEnabled: true,
@@ -124,8 +136,13 @@ DG.IconButton = SC.View.extend(
         var action = this.get('action');
         var target = this.get('target') || null;
         var pane   = this.get('pane');
-        var responder = pane ? pane.get('rootResponder') : null ;
-        if (responder) responder.sendAction(action, target, this, pane);
+        if( action instanceof Function) {
+          action.call( target)
+        }
+        else {
+          var responder = pane ? pane.get('rootResponder') : null;
+          if (responder) responder.sendAction(action, target, this, pane);
+        }
       },
       touchStart: function( iTouch) {
         this.beginPropertyChanges();

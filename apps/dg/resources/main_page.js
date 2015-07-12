@@ -193,6 +193,17 @@ DG.mainPage = SC.Page.design((function() {
             this.appendChild( this[ iButtonName ]);
           }.bind(this));
           DG.currDocumentController().set('guideButton', this.guideButton);
+        },
+        /**
+         * Override this so that the child views will have a height that fits with their icon and label.
+         * Without this, the menu for the options popup appears too low.
+         * @param iChild {SC.View}
+         * @param iLayout {Object}
+         */
+        applyPlanToView: function( iChild, iLayout) {
+          SC.FlowedLayout.applyPlanToView.apply(this, arguments);
+          if( iChild.adjustHeight)
+            iChild.adjustHeight();
         }
       })
 
@@ -231,6 +242,7 @@ DG.mainPage = SC.Page.design((function() {
         tScrollView.set('hasHorizontalScroller', false);
         tScrollView.set('hasVerticalScroller', false);
       }
+      this.setPath('inspectorPalette.componentContainer', this.getPath('scrollView.contentView'));
       this.invokeLater( 'setupDragDrop', 300);
     },
 
